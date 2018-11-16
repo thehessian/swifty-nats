@@ -160,21 +160,31 @@ extension NatsClient: NatsConnection {
     }
 
     fileprivate func authenticateWithServer() throws {
-
-        guard let user = self.connectedUrl?.user, let password = self.connectedUrl?.password else {
-            throw NatsConnectionError("Server authentication requires url with basic authentication")
+        let config: [String: Any]
+        if let user = self.connectedUrl?.user, let password = self.connectedUrl?.password {
+            config = [
+                "verbose": self.config.verbose,
+                "pedantic": self.config.pedantic,
+                "ssl_required": server!.sslRequired,
+                "name": self.config.name,
+                "lang": self.config.lang,
+                "version": self.config.version,
+                "user": user,
+                "pass": password
+            ]
+        } else if let query = self.connectedUrl?.query?.components(separatedBy: "="), query.count == 2 {
+            config = [
+                "verbose": self.config.verbose,
+                "pedantic": self.config.pedantic,
+                "ssl_required": server!.sslRequired,
+                "name": self.config.name,
+                "lang": self.config.lang,
+                "version": self.config.version,
+                query.first! : query.last!,
+            ]
+        } else {
+            throw NatsConnectionError("Server authentication requires url with basic authentication or a query parameter with the key-value pair to pass for authentication")
         }
-
-        let config = [
-            "verbose": self.config.verbose,
-            "pedantic": self.config.pedantic,
-            "ssl_required": server!.sslRequired,
-            "name": self.config.name,
-            "lang": self.config.lang,
-            "version": self.config.version,
-            "user": user,
-            "pass": password
-            ] as [String : Any]
 
         self.sendMessage(NatsMessage.connect(config: config))
 
