@@ -56,9 +56,9 @@ extension NatsClient {
 
     // MARK - Implement Internal Methods
 
-    internal func sendMessage(_ message: String) {
+    internal func sendMessage(_ message: String, ignoreConnecionStatus: Bool = false) {
 
-        guard self.state == .connected else { return }
+        guard ignoreConnecionStatus == true || self.state == .connected else { return }
 
         var buffer = self.channel?.allocator.buffer(capacity: message.utf8.count)
         buffer?.write(string: message)

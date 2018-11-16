@@ -186,7 +186,7 @@ extension NatsClient: NatsConnection {
             throw NatsConnectionError("Server authentication requires url with basic authentication or a query parameter with the key-value pair to pass for authentication")
         }
 
-        self.sendMessage(NatsMessage.connect(config: config))
+        self.sendMessage(NatsMessage.connect(config: config), ignoreConnecionStatus: true)
 
     }
 
