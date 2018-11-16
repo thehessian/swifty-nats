@@ -58,7 +58,7 @@ extension NatsMessage {
         
         if components.count <= 0 { return nil }
         
-        let payload = components[1]
+        let payload = components.count > 0 ? components[1] : nil
         let header = components[0]
             .removePrefix(NatsOperation.message.rawValue)
             .components(separatedBy: CharacterSet.whitespaces)
