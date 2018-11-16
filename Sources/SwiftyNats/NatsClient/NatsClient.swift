@@ -22,7 +22,7 @@ public enum NatsEvent: String {
     case dropped = "dropped"
     case reconnecting = "reconnecting"
     case informed = "informed"
-    static let all = [ connected, disconnected, response, error, dropped, reconnecting ]
+    public static let all = [ connected, disconnected, response, error, dropped, reconnecting ]
 }
 
 internal enum NatsOperation: String {
@@ -51,7 +51,7 @@ open class NatsClient: NSObject {
     internal var messageQueue = OperationQueue()
     internal var state: NatsState = .disconnected
     internal var connectionError: NatsError?
-    internal let group = MultiThreadedEventLoopGroup(numThreads: 1)
+    internal let group = MultiThreadedEventLoopGroup(numberOfThreads: 1)
     internal var channel: Channel?
     internal let dispatchGroup = DispatchGroup()
 

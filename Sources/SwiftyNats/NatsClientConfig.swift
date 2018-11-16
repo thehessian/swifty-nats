@@ -22,7 +22,7 @@ public struct NatsClientConfig {
     var internalQueueMax: Int = 100
     var connectionRetryDelay: TimeInterval = 5
     
-    init(
+    public init(
         verbose: Bool = false,
         pedantic: Bool = false,
         name: String = "SwiftyNats"
