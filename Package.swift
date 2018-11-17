@@ -8,7 +8,7 @@ let package = Package(
         .library(name: "SwiftyNats", targets: ["SwiftyNats"])
     ],
     dependencies: [
-        .package(url: "https://github.com/apple/swift-nio.git", from: "1.3.1")
+        .package(url: "https://github.com/apple/swift-nio.git", from: "1.9.5")
     ],
     targets: [
         .target(name: "SwiftyNats", dependencies: ["NIO"]),

@@ -50,10 +50,6 @@ extension NatsMessage {
     }
     
     internal static func parse(_ message: String) -> NatsMessage? {
-        
-        print("### PARSING ###")
-        print(message)
-        
         let components = message.components(separatedBy: CharacterSet.newlines).filter { !$0.isEmpty }
         
         if components.count <= 0 { return nil }
