@@ -95,14 +95,23 @@ extension String {
         
     }
     
-    func parseOutMessages() -> [String] {
+    func parseOutMessages(prevBuffer: String?) -> ([String], String?) {
     
         var messages = [String]()
         let lines = self.components(separatedBy: "\n")
+
         var isMessageFlag = false
         var lastLine = ""
+        var existingMessage = prevBuffer
         
-        for line in lines {
+        for parsedLine in lines {
+            let line: String
+            if let prefix = existingMessage {
+                line = prefix + parsedLine
+                existingMessage = nil
+            } else {
+                line = parsedLine
+            }
         
             if isMessageFlag {
                 messages.append(lastLine + line)
@@ -121,10 +130,15 @@ extension String {
             default:
                 messages.append(line)
             }
-        
+        }
+
+        var newExistingBuffer: String?
+        if lastLine.count == 0 {
+            newExistingBuffer = messages.last
+            messages.removeLast()
         }
         
-        return messages
+        return (messages, newExistingBuffer)
     }
     
 }

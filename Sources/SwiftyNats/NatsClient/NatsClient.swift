@@ -54,6 +54,7 @@ open class NatsClient: NSObject {
     internal let group = MultiThreadedEventLoopGroup(numberOfThreads: 1)
     internal var channel: Channel?
     internal let dispatchGroup = DispatchGroup()
+    internal var prevReadBuffer: String?
 
     public init(_ aUrls: [String], _ config: NatsClientConfig) {
 

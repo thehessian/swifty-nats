@@ -15,7 +15,9 @@ extension NatsClient: ChannelInboundHandler {
     public func channelRead(ctx: ChannelHandlerContext, data: NIOAny) {
 
         var buffer = self.unwrapInboundIn(data)
-        guard let messages = buffer.readString(length: buffer.readableBytes)?.parseOutMessages() else { return }
+        guard let (messages, newBuffer) = buffer.readString(length: buffer.readableBytes)?.parseOutMessages(prevBuffer: prevReadBuffer) else { return }
+
+        self.prevReadBuffer = newBuffer
 
         for message in messages {
 
