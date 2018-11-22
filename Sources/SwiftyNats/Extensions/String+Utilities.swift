@@ -133,7 +133,10 @@ extension String {
         }
 
         var newExistingBuffer: String?
-        if lastLine.count == 0 {
+        if lastLine.count != 0 {
+            // If the last line is not empty, then we didn't have a newline at the
+            // end of our message which means that we are in the middle of processing
+            // a message but we need to hear the rest of it.
             newExistingBuffer = messages.last
             messages.removeLast()
         }
