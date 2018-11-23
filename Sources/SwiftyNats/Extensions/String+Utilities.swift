@@ -95,7 +95,7 @@ extension String {
         
     }
     
-    func parseOutMessages(prevBuffer: String?) -> ([String], String?) {
+    func parseOutMessages(prevBuffer: LastReadMessage?) -> ([String], LastReadMessage?) {
     
         var messages = [String]()
         let lines = self.components(separatedBy: "\n")
@@ -104,12 +104,15 @@ extension String {
         var addedLastLine = false
         var lastLine = ""
         var existingMessage = prevBuffer
+        var processedMsgFlag = false
         
         for parsedLine in lines {
             addedLastLine = false
+            processedMsgFlag = false
             let line: String
             if let prefix = existingMessage {
-                line = prefix + parsedLine
+                line = prefix.message + parsedLine
+                isMessageFlag = prefix.processedMsgFlag
                 existingMessage = nil
             } else {
                 line = parsedLine
@@ -119,6 +122,7 @@ extension String {
                 addedLastLine = true
                 messages.append(lastLine + line)
                 isMessageFlag = false
+                processedMsgFlag = true
                 continue
             }
             
@@ -136,16 +140,16 @@ extension String {
             }
         }
 
-        var newExistingBuffer: String?
+        var newExistingBuffer: LastReadMessage?
         if lastLine.count != 0 {
             // If the last line is not empty, then we didn't have a newline at the
             // end of our message which means that we are in the middle of processing
             // a message but we need to hear the rest of it.
             if addedLastLine {
-                newExistingBuffer = messages.last
+                newExistingBuffer = LastReadMessage(message: messages.last!, processedMsgFlag: processedMsgFlag)
                 messages.removeLast()
             } else {
-                newExistingBuffer = lastLine
+                newExistingBuffer = LastReadMessage(message: lastLine, processedMsgFlag: processedMsgFlag)
             }
         }
         

@@ -38,6 +38,11 @@ internal enum NatsOperation: String {
     case pong = "PONG"
 }
 
+internal struct LastReadMessage {
+    let message: String
+    let processedMsgFlag: Bool
+}
+
 open class NatsClient: NSObject {
 
     var urls = [String]()
@@ -54,7 +59,7 @@ open class NatsClient: NSObject {
     internal let group = MultiThreadedEventLoopGroup(numberOfThreads: 1)
     internal var channel: Channel?
     internal let dispatchGroup = DispatchGroup()
-    internal var prevReadBuffer: String?
+    internal var prevReadBuffer: LastReadMessage?
 
     public init(_ aUrls: [String], _ config: NatsClientConfig) {
 
