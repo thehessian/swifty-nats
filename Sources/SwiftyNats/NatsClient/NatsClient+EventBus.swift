@@ -10,28 +10,28 @@ extension NatsClient: NatsEventBus {
     // MARK - Implement NatsEvents Protocol
     
     @discardableResult
-    open func on(_ events: [NatsEvent], _ handler: @escaping (NatsEvent) -> Void) -> String {
+    open func on(_ events: [NatsEvent], _ handler: @escaping (NatsEvent, String?) -> Void) -> String {
         
         return self.addListeners(for: events, using: handler)
 
     }
     
     @discardableResult
-    open func on(_ event: NatsEvent, _ handler: @escaping (NatsEvent) -> Void) -> String {
+    open func on(_ event: NatsEvent, _ handler: @escaping (NatsEvent, String?) -> Void) -> String {
         
         return self.addListeners(for: [event], using: handler)
         
     }
     
     @discardableResult
-    open func on(_ event: NatsEvent, autoOff: Bool, _ handler: @escaping (NatsEvent) -> Void) -> String {
+    open func on(_ event: NatsEvent, autoOff: Bool, _ handler: @escaping (NatsEvent, String?) -> Void) -> String {
         
         return self.addListeners(for: [event], using: handler, autoOff)
         
     }
     
     @discardableResult
-    open func on(_ events: [NatsEvent], autoOff: Bool, _ handler: @escaping (NatsEvent) -> Void) -> String {
+    open func on(_ events: [NatsEvent], autoOff: Bool, _ handler: @escaping (NatsEvent, String?) -> Void) -> String {
         
         return self.addListeners(for: events, using: handler, autoOff)
         
@@ -45,12 +45,12 @@ extension NatsClient: NatsEventBus {
     
     // MARK - Implement internal methods
     
-    internal func fire(_ event: NatsEvent) {
+    internal func fire(_ event: NatsEvent, message: String?) {
         
         guard let handlerStore = self.eventHandlerStore[event] else { return }
 
         handlerStore.forEach {
-            $0.handler(event)
+            $0.handler(event, message)
             if $0.autoOff {
                 removeListener($0.listenerId)
             }
@@ -60,7 +60,7 @@ extension NatsClient: NatsEventBus {
     
     // MARK - Implement private methods
     
-    fileprivate func addListeners(for events: [NatsEvent], using handler: @escaping (NatsEvent) -> Void, _ autoOff: Bool = false) -> String {
+    fileprivate func addListeners(for events: [NatsEvent], using handler: @escaping (NatsEvent, String?) -> Void, _ autoOff: Bool = false) -> String {
         
         let id = String.hash()
         

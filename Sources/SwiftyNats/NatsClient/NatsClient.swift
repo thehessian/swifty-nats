@@ -103,10 +103,10 @@ protocol NatsPublish {
 }
 
 protocol NatsEventBus {
-    func on(_ events: [NatsEvent], _ handler: @escaping (NatsEvent) -> Void) -> String
-    func on(_ event: NatsEvent, _ handler: @escaping (NatsEvent) -> Void) -> String
-    func on(_ event: NatsEvent, autoOff: Bool, _ handler: @escaping (NatsEvent) -> Void) -> String
-    func on(_ events: [NatsEvent], autoOff: Bool, _ handler: @escaping (NatsEvent) -> Void) -> String
+    func on(_ events: [NatsEvent], _ handler: @escaping (NatsEvent, String?) -> Void) -> String
+    func on(_ event: NatsEvent, _ handler: @escaping (NatsEvent, String?) -> Void) -> String
+    func on(_ event: NatsEvent, autoOff: Bool, _ handler: @escaping (NatsEvent, String?) -> Void) -> String
+    func on(_ events: [NatsEvent], autoOff: Bool, _ handler: @escaping (NatsEvent, String?) -> Void) -> String
     func off(_ id: String)
 }
 

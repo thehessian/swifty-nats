@@ -8,9 +8,9 @@
 
 internal struct NatsEventHandler {
     let listenerId: String
-    let handler: (NatsEvent) -> Void
+    let handler: (NatsEvent, String?) -> Void
     let autoOff: Bool
-    init(lid: String, handler: @escaping (NatsEvent) -> Void, autoOff: Bool = false) {
+    init(lid: String, handler: @escaping (NatsEvent, String?) -> Void, autoOff: Bool = false) {
         self.listenerId = lid
         self.handler = handler
         self.autoOff = autoOff

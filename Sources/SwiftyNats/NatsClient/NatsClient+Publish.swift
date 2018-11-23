@@ -32,7 +32,7 @@ extension NatsClient: NatsPublish {
 
         var response: NatsEvent?
 
-        self.on([.response, .error], autoOff: true) { e in
+        self.on([.response, .error], autoOff: true) { (e, c) in
             response = e
             group.leave()
         }

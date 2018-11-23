@@ -28,10 +28,10 @@ extension NatsClient: ChannelInboundHandler {
                 self.sendMessage(NatsMessage.pong())
                 continue
             case .ok:
-                self.fire(.response)
+                self.fire(.response, message: message)
                 continue
             case .error:
-                self.fire(.error)
+                self.fire(.error, message: message)
                 continue
             case .message:
                 self.handleIncomingMessage(message)
@@ -49,7 +49,7 @@ extension NatsClient: ChannelInboundHandler {
     public func errorCaught(ctx: ChannelHandlerContext, error: Error) {
         self.disconnect()
         ctx.close(promise: nil)
-        self.fire(.disconnected)
+        self.fire(.disconnected, message: nil)
     }
 }
 
@@ -75,14 +75,14 @@ extension NatsClient {
         // Then disconnect. Not 100% sure when this would happen
         if let config = info.removeNewlines().removePrefix(NatsOperation.info.rawValue).toJsonDicitonary() {
             self.server = NatsServer(config)
-            self.fire(.informed)
+            self.fire(.informed, message: nil)
         }
     }
 
     fileprivate func handleIncomingMessage(_ messageStr: String) {
 
         if self.queueCount > self.config.internalQueueMax {
-            self.fire(.dropped)
+            self.fire(.dropped, message: messageStr)
             return
         }
 

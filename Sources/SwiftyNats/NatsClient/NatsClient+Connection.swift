@@ -40,7 +40,7 @@ extension NatsClient: NatsConnection {
         }
 
         self.state = .connected
-        self.fire(.connected)
+        self.fire(.connected, message: nil)
 
     }
 
@@ -49,14 +49,14 @@ extension NatsClient: NatsConnection {
         try? self.channel?.close().wait()
         try? self.group.syncShutdownGracefully()
         self.state = .disconnected
-        self.fire(.disconnected)
+        self.fire(.disconnected, message: nil)
     }
 
     // MARK - Internal Methods
 
     internal func retryConnection() {
 
-        self.fire(.reconnecting)
+        self.fire(.reconnecting, message: nil)
         var retryCount = 0
 
         if self.config.autoRetry {
@@ -125,7 +125,7 @@ extension NatsClient: NatsConnection {
 
         var isInformed = false
         var hasErrored = false
-        self.on([.informed, .error], autoOff: true) { e in
+        self.on([.informed, .error], autoOff: true) { (e, c) in
             switch e {
             case .informed:
                 isInformed = true

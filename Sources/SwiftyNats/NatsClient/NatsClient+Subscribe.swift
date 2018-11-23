@@ -51,7 +51,7 @@ extension NatsClient: NatsSubscribe {
 
         var response: NatsEvent?
 
-        self.on([.response, .error], autoOff: true) { e in
+        self.on([.response, .error], autoOff: true) { (e, c) in
             response = e
             group.leave()
         }
@@ -87,7 +87,7 @@ extension NatsClient: NatsSubscribe {
 
         var response: NatsEvent?
 
-        self.on([.response, .error], autoOff: true) { e in
+        self.on([.response, .error], autoOff: true) { (e, c) in
             response = e
             group.leave()
         }
