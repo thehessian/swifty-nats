@@ -101,10 +101,12 @@ extension String {
         let lines = self.components(separatedBy: "\n")
 
         var isMessageFlag = false
+        var addedLastLine = false
         var lastLine = ""
         var existingMessage = prevBuffer
         
         for parsedLine in lines {
+            addedLastLine = false
             let line: String
             if let prefix = existingMessage {
                 line = prefix + parsedLine
@@ -129,6 +131,7 @@ extension String {
                 break
             default:
                 messages.append(line)
+                addedLastLine = true
             }
         }
 
@@ -137,8 +140,10 @@ extension String {
             // If the last line is not empty, then we didn't have a newline at the
             // end of our message which means that we are in the middle of processing
             // a message but we need to hear the rest of it.
-            newExistingBuffer = messages.last
-            messages.removeLast()
+            newExistingBuffer = lastLine
+            if addedLastLine {
+                messages.removeLast()
+            }
         }
         
         return (messages, newExistingBuffer)
