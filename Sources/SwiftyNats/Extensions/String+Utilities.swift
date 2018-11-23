@@ -116,6 +116,7 @@ extension String {
             }
         
             if isMessageFlag {
+                addedLastLine = true
                 messages.append(lastLine + line)
                 isMessageFlag = false
                 continue
@@ -140,9 +141,11 @@ extension String {
             // If the last line is not empty, then we didn't have a newline at the
             // end of our message which means that we are in the middle of processing
             // a message but we need to hear the rest of it.
-            newExistingBuffer = lastLine
             if addedLastLine {
+                newExistingBuffer = messages.last
                 messages.removeLast()
+            } else {
+                newExistingBuffer = lastLine
             }
         }
         
